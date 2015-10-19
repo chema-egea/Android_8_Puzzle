@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,26 +30,21 @@ public class MainActivity extends AppCompatActivity {
 
         botones = dameBotones();
 
-        for(int i=0;i<botones.length;i++)
+        for(int i=0;i<9;i++)
         {
             this.celdas.add(i);
         }
 
-        Log.i("Numero de celdas", ""+celdas.size());
+        //Log.i("Numero de celdas", "" + celdas.size());
 
-        Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
 
-        Log.i("Hemos ordenado las celdas?", "Si");
-
-        rellenar_grid();
-
-        Log.i("Hemos RELLENADO EL GRID", "-----------------------");
+        //Log.i("Hemos RELLENADO EL GRID", "-----------------------");
 
         textoFeedback = (TextView) findViewById(R.id.textoFeedback);
 
-        Log.i("Vamos a dar un listener a cada uno de los botones", "--------------------");
+        //Log.i("Vamos a dar un listener a cada uno de los botones", "--------------------");
 
-        for (int i = 1; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             if(botones[i] != null) {
                 botones[i].setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -58,109 +54,130 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Log.i("LISTENER DADOS", "EXITO");
+        //Log.i("LISTENER DADOS", "EXITO");
+
+        //Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
+        Random rn = new Random();
+        for (int i=0;i<50;i++)
+        {
+            int random_p = rn.nextInt(8 - 0 + 1) + 0;
+            //Log.i("RANDOM ", "" + random_p);
+            if(botones[random_p]!=null) {
+                hacerMovimeinto(botones[random_p]);
+            }
+        }
+
+        //Log.i("Hemos ordenado las celdas?", "Si");
+
+        rellenar_grid();
+
+
+
 
     }
 
     public void hacerMovimeinto(final Button b)
     {
-        bad_move=true;
+        if(b.getText().length()!=0) {
+            bad_move = true;
 
-        int b_text;
-        int b_pos;
-        int zuk_pos;
+            int b_text;
+            int b_pos;
+            int zuk_pos;
 
-        b_text=Integer.parseInt((String) b.getText());
+            b_text = Integer.parseInt((String) b.getText());
 
-        b_pos=encontrar_posicion(b_text);
+            b_pos = encontrar_elemento(b_text);
 
-        zuk_pos=encontrar_posicion(0);
+            zuk_pos = encontrar_elemento(9);
 
-        switch(zuk_pos)
+            //Log.i("El elemento vacio esta en la posicion",""+(zuk_pos+1));
+            //Log.i("El boton pulsado esta en la posicion",""+(b_pos+1));
+            //Log.i("El boton pulsado es ",""+b_text);
+
+            switch (zuk_pos)
+            {
+                case (0):
+                {
+                    if (b_pos == 1 || b_pos == 3)
+                        bad_move = false;
+                    break;
+                }
+                case (1):
+                {
+                    if (b_pos == 0 || b_pos == 2 || b_pos == 4)
+                        bad_move = false;
+                    break;
+                }
+                case (2):
+                {
+                    if (b_pos == 1 || b_pos == 5)
+                        bad_move = false;
+                    break;
+                }
+                case (3):
+                {
+                    if (b_pos == 0 || b_pos == 4 || b_pos == 6)
+                        bad_move = false;
+                    break;
+                }
+                case (4):
+                {
+                    if (b_pos == 1 || b_pos == 3 || b_pos == 5 || b_pos == 7)
+                        bad_move = false;
+                    break;
+                }
+                case (5):
+                {
+                    if (b_pos == 2 || b_pos == 4 || b_pos == 8)
+                        bad_move = false;
+                    break;
+                }
+                case (6):
+                {
+                    if (b_pos == 3 || b_pos == 7)
+                        bad_move = false;
+                    break;
+                }
+                case (7):
+                {
+                    if (b_pos == 4 || b_pos == 6 || b_pos == 8)
+                        bad_move = false;
+
+                    break;
+                }
+                case (8):
+                {
+                    if (b_pos == 5 || b_pos == 7)
+                        bad_move = false;
+                    break;
+                }
+            }
+
+        if(bad_move==true)
         {
-            case (0):
-            {
-                if (b_pos == 1 || b_pos == 3)
-                    bad_move = false;
-                break;
-            }
-            case (1):
-            {
-                if (b_pos == 0 || b_pos == 2 || b_pos == 4)
-                    bad_move = false;
-                break;
-            }
-            case (2):
-            {
-                if (b_pos == 1 || b_pos == 5)
-                    bad_move = false;
-                break;
-            }
-            case (3):
-            {
-                if (b_pos == 0 || b_pos == 4 || b_pos == 6)
-                    bad_move = false;
-                break;
-            }
-            case (4):
-            {
-                if (b_pos == 1 || b_pos == 3 || b_pos == 5 || b_pos == 7)
-                    bad_move = false;
-                break;
-            }
-            case (5):
-            {
-                if (b_pos == 2 || b_pos == 4 || b_pos == 8)
-                    bad_move = false;
-                break;
-            }
-            case (6):
-            {
-                if (b_pos == 3 || b_pos == 7)
-                    bad_move = false;
-                break;
-            }
-            case (7):
-            {
-                if (b_pos == 4 || b_pos == 6 || b_pos == 8)
-                    bad_move = false;
-
-                break;
-            }
-            case (8):
-            {   if(b_pos==5||b_pos==7)
-                    bad_move=false;
-                break;
-            }
-        }
-
-        /*if(bad_move==true)
-        {
-            feedbackText.setText("Move Not Allowed");
+            //textoFeedback.setText("Movimiento no permitido "+b_text);
             return;
-        }*/
-
-        //feedbackText.setText("Move OK");
-
-        celdas.remove(b_pos);
-        celdas.add(b_pos, 0);
-        celdas.remove(zuk_pos);
-        celdas.add(zuk_pos, b_text);
-
-
-        rellenar_grid();
-
-
-        for(int i=0;i<9;i++)
-        {
-            if(celdas.get(i)!=objetivo[i])
-            {
-                return;
-            }
         }
-        textoFeedback.setText("Has Ganado");
-    }
 
+            //textoFeedback.setText("Movimiento OK");
+
+            celdas.remove(b_pos);
+            celdas.add(b_pos, 8);
+            celdas.remove(zuk_pos);
+            celdas.add(zuk_pos, b_text - 1);
+
+            rellenar_grid();
+
+
+            for (int i = 0; i < 9; i++) {
+                if (celdas.get(i) != objetivo[i]) {
+                    return;
+                }
+            }
+            //textoFeedback.setText("Has Ganado");
+        }
+    }
 
 
     public Button[] dameBotones()
@@ -187,16 +204,20 @@ public class MainActivity extends AppCompatActivity {
             if(celdas.get(i) !=null) {
                 int text = celdas.get(i);
 
-                Log.i("text vale", "" + text);
-
+                if (text!=8)
+                {
+                    Log.i("text vale", "" + (text+1));
+                }
+                else
+                {
+                    Log.i("text vale", "vacio");
+                }
                 //TableLayout.LayoutParams absParams = (TableLayout.LayoutParams) botones[text].getLayoutParams();
 
 
                 switch (i) {
-                    case (0): {
-                        //absParams.x = 5;
-                        //absParams.y = 5;
-                        //botones[text].setLayoutParams(absParams);
+                    case (0):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -206,10 +227,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (1): {
-                        //absParams.x = 110;
-                        //absParams.y = 5;
-                        //botones[text].setLayoutParams(absParams);
+                    case (1):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -219,10 +238,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (2): {
-                        //absParams.x = 215;
-                        //absParams.y = 5;
-                        //botones[text].setLayoutParams(absParams);
+                    case (2):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -232,10 +249,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (3): {
-                        //absParams.x = 5;
-                        //absParams.y = 110;
-                        //botones[text].setLayoutParams(absParams);
+                    case (3):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -245,10 +260,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (4): {
-                        //absParams.x = 110;
-                        //absParams.y = 110;
-                        //botones[text].setLayoutParams(absParams);
+                    case (4):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -258,10 +271,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (5): {
-                        //absParams.x = 215;
-                        //absParams.y = 110;
-                        //botones[text].setLayoutParams(absParams);
+                    case (5):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -271,10 +282,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (6): {
-                        //absParams.x = 5;
-                        //absParams.y = 215;
-                        //botones[text].setLayoutParams(absParams);
+                    case (6):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -284,10 +293,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (7): {
-                        //absParams.x = 110;
-                        //absParams.y = 215;
-                        //botones[text].setLayoutParams(absParams);
+                    case (7):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -297,10 +304,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case (8): {
-                        //absParams.x = 215;
-                        //absParams.y = 215;
-                        //botones[text].setLayoutParams(absParams);
+                    case (8):
+                    {
                         if (text==8)
                         {
                             botones[i].setText("");
@@ -320,24 +325,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public int encontrar_posicion(int elemento)
+    public int encontrar_elemento(int elemento)
     {
-        int i=0;
-        for(i=0;i<9;i++)
+        //Log.i("RECORREMOS LAS CELDAS, el elemento a buscar es", "" + elemento);
+        for (int i = 0; i < 9; i++)
         {
-            if(celdas.get(i)==elemento)
+            //Log.i("Recorremos celda, elemento en i es", "" + (celdas.get(i) + 1));
+            if (celdas.get(i).intValue() == (elemento-1))
             {
-                break;
+                //Log.i("Devolvemos la celda, que es ", "" + (celdas.get(i) + 1));
+                return i;
             }
         }
-        return i;
+        return 8;
     }
 
 
 
     public void barajarBotones(View view)
     {
-        Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
+        Random rn = new Random();
+        for (int i=0;i<50;i++)
+        {
+            int random_p = rn.nextInt(8 - 0 + 1) + 0;
+            //Log.i("RANDOM ", "" + random_p);
+            if(botones[random_p]!=null) {
+                hacerMovimeinto(botones[random_p]);
+            }
+        }
+        //Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
         rellenar_grid();
     }
 
