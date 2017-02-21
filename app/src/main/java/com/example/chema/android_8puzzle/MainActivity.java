@@ -1,21 +1,21 @@
-package com.example.chema.puzle;
+package com.example.chema.android_8puzzle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
+
 
     private Button[] botones;
     private Boolean bad_move=false;
+    private Boolean game_started=false;
     private static final Integer[] objetivo = new Integer[] {0,1,2,3,4,5,6,7,8};
     private ArrayList<Integer> celdas = new ArrayList<Integer>();
     private TextView textoFeedback;
@@ -35,15 +35,11 @@ public class MainActivity extends AppCompatActivity {
             this.celdas.add(i);
         }
 
-        //Log.i("Numero de celdas", "" + celdas.size());
-
-
-        //Log.i("Hemos RELLENADO EL GRID", "-----------------------");
 
         textoFeedback = (TextView) findViewById(R.id.textoFeedback);
 
-        //Log.i("Vamos a dar un listener a cada uno de los botones", "--------------------");
 
+        //Asignamos Listener a cada boton
         for (int i = 0; i < 9; i++) {
             if(botones[i] != null) {
                 botones[i].setOnClickListener(new View.OnClickListener() {
@@ -54,28 +50,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //Log.i("LISTENER DADOS", "EXITO");
 
-        //Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
+        //colocamos las celdas de forma aleatoria
         Random rn = new Random();
         for (int i=0;i<50;i++)
         {
             int random_p = rn.nextInt(8 - 0 + 1) + 0;
-            //Log.i("RANDOM ", "" + random_p);
             if(botones[random_p]!=null) {
                 hacerMovimeinto(botones[random_p]);
             }
         }
 
-        //Log.i("Hemos ordenado las celdas?", "Si");
 
         rellenar_grid();
 
-
-
+        game_started = true;
 
     }
 
+    //Make a move
     public void hacerMovimeinto(final Button b)
     {
         if(b.getText().length()!=0) {
@@ -83,19 +76,17 @@ public class MainActivity extends AppCompatActivity {
 
             int b_text;
             int b_pos;
-            int zuk_pos;
+            int blank_pos;
 
             b_text = Integer.parseInt((String) b.getText());
 
             b_pos = encontrar_elemento(b_text);
 
-            zuk_pos = encontrar_elemento(9);
+            //get the blank space position
+            blank_pos = encontrar_elemento(9);
 
-            //Log.i("El elemento vacio esta en la posicion",""+(zuk_pos+1));
-            //Log.i("El boton pulsado esta en la posicion",""+(b_pos+1));
-            //Log.i("El boton pulsado es ",""+b_text);
-
-            switch (zuk_pos)
+            //depending of where it is, we can move or not to another pos
+            switch (blank_pos)
             {
                 case (0):
                 {
@@ -156,16 +147,21 @@ public class MainActivity extends AppCompatActivity {
 
         if(bad_move==true)
         {
-            //textoFeedback.setText("Movimiento no permitido "+b_text);
-            return;
+            if(game_started)
+            {
+                textoFeedback.setText("Movimiento no permitido "+b_text);
+                return;
+            }
         }
-
-            //textoFeedback.setText("Movimiento OK");
+        else
+        {
+            textoFeedback.setText("");
+        }
 
             celdas.remove(b_pos);
             celdas.add(b_pos, 8);
-            celdas.remove(zuk_pos);
-            celdas.add(zuk_pos, b_text - 1);
+            celdas.remove(blank_pos);
+            celdas.add(blank_pos, b_text - 1);
 
             rellenar_grid();
 
@@ -175,11 +171,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
             }
-            //textoFeedback.setText("Has Ganado");
+
+            if (game_started)
+            {
+                textoFeedback.setText("Has Ganado");
+            }
         }
     }
 
 
+    //Get de puzzle UI buttons
     public Button[] dameBotones()
     {
         Button[] b = new Button[9];
@@ -197,25 +198,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Write the number in the UI buttons
     public void rellenar_grid()
     {
         for(int i=0;i<9;i++)
         {
-            if(celdas.get(i) !=null) {
+            if(celdas.get(i) !=null)
+            {
                 int text = celdas.get(i);
 
-                if (text!=8)
-                {
-                    Log.i("text vale", "" + (text+1));
-                }
-                else
-                {
-                    Log.i("text vale", "vacio");
-                }
-                //TableLayout.LayoutParams absParams = (TableLayout.LayoutParams) botones[text].getLayoutParams();
 
-
-                switch (i) {
+                switch (i)
+                {
                     case (0):
                     {
                         if (text==8)
@@ -325,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Find element in the rows
     public int encontrar_elemento(int elemento)
     {
         //Log.i("RECORREMOS LAS CELDAS, el elemento a buscar es", "" + elemento);
@@ -342,19 +337,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //shuffle the buttons to reallocate
     public void barajarBotones(View view)
     {
+        game_started = false;
         Random rn = new Random();
         for (int i=0;i<50;i++)
         {
             int random_p = rn.nextInt(8 - 0 + 1) + 0;
-            //Log.i("RANDOM ", "" + random_p);
             if(botones[random_p]!=null) {
                 hacerMovimeinto(botones[random_p]);
             }
         }
-        //Collections.shuffle(this.celdas); //colocamos las celdas de forma aleatoria
         rellenar_grid();
+        game_started = true;
     }
 
 

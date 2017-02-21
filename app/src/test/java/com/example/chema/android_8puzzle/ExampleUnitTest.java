@@ -1,4 +1,4 @@
-package com.example.chema.puzle;
+package com.example.chema.android_8puzzle;
 
 import org.junit.Test;
 
